@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT 服务展示</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f4f7fc;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px 25px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subhead {
+            color: #475569;
+            font-size: 15px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            background: #f8fafc;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.6;
+        }
+        /* 选项卡导航 */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 25px;
+            padding-bottom: 4px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 22px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .tab-btn:hover { background: #f1f5f9; color: #0f172a; }
+        .tab-btn.active {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 8px rgba(59,130,246,0.25);
+        }
+        .tab-btn .badge {
+            background: #e2e8f0;
+            color: #1e293b;
+            font-size: 12px;
+            padding: 0 8px;
+            border-radius: 20px;
+            margin-left: 6px;
+        }
+        .tab-btn.active .badge { background: rgba(255,255,255,0.25); color: white; }
+
+        /* 内容面板 */
+        .tab-panel {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .tab-panel.active { display: block; }
+        @keyframes fade { from { opacity:0.3; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+        /* 表格通用样式 */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e9edf2;
+            background: white;
+            margin: 10px 0 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 700px;
+        }
+        th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 2px solid #d1d9e6;
+            white-space: nowrap;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eef2f6;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+        tr:hover td { background: #fafcff; }
+        .highlight {
+            background: #fef9e7;
+        }
+        .tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e4b8a;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .tag.green { background: #d1fae5; color: #065f46; }
+        .tag.orange { background: #fef3c7; color: #92400e; }
+        .tag.pink { background: #fce7f3; color: #9d174d; }
+
+        /* PA介绍卡片 */
+        .pa-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 8px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        .pa-card strong { color: #0f172a; }
+
+        .footnote {
+            background: #f1f5f9;
+            padding: 18px 22px;
+            border-radius: 16px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+        }
+        .footnote a { color: #2563eb; text-decoration: none; }
+        .footnote a:hover { text-decoration: underline; }
+
+        @media (max-width: 700px) {
+            .container { padding: 16px; }
+            .tab-btn { padding: 10px 14px; font-size: 14px; }
+            h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📚 2026 Spring PT 服务总览</h1>
+    <div class="subhead">
+        服务截止日期：2026年6月14日 · 点击下方选项卡切换不同服务类型
+    </div>
+
+    <!-- 选项卡按钮 -->
+    <div class="tabs" id="tabHeaders">
+        <button class="tab-btn active" data-tab="station">📅 答疑排班 <span class="badge">周一~四</span></button>
+        <button class="tab-btn" data-tab="tutoring">🧑‍🏫 1v1 学科辅导 <span class="badge">可预约</span></button>
+        <button class="tab-btn" data-tab="english">🗣️ 1v1 英语口语 <span class="badge">仅24/25级</span></button>
+        <button class="tab-btn" data-tab="pa">🤝 Peer Adviser <span class="badge">学习方法咨询</span></button>
+    </div>
+
+    <!-- =========== 面板1：答疑排班 =========== -->
+    <div id="station" class="tab-panel active">
+        <p style="margin-bottom:12px; color:#475569;">📍 地点：E1教学楼 · 扫码排队答疑，值班人数会根据签到调整</p>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>星期</th><th>课程</th><th>教室</th><th>时间</th><th>PT</th><th>邮箱</th><th>备注</th></tr></thead>
+                <tbody>
+                    <!-- Monday -->
+                    <tr><td rowspan="6">周一</td><td>ALGEBRA A + B</td><td>E1-204</td><td>19:00-21:00</td><td>Xilin Xie-24MCS</td><td>xie25541@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ANALYTICAL CHEMISTRY 1 / EXTANDED (FOR ENGINEERS)</td><td>E1-205</td><td>20:00-22:00</td><td>Zexin Liao-23CH</td><td>liao24715@gtiit.edu.cn</td><td>本周临时调整为周四值班</td></tr>
+                    <tr><td>Differential and Integral Calculus 1M</td><td>E1-301</td><td>19:00-21:00</td><td>Hongwei Yuan-24MER</td><td>yuan25951@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>Differential and Integral Calculus 2/2M</td><td>E1-302</td><td>19:00-21:00</td><td>Bowen Zhang-23MSE</td><td>zhang24438@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ORGANIC CHEMISTRY</td><td>E1-303</td><td>20:00-22:00</td><td>Yaqi Hu-23BFE</td><td>hu24088@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>Physics 2</td><td>E1-304</td><td>20:00-22:00</td><td>Wenxin Zhang-24MSE</td><td>zhang25256@gtiit.edu.cn</td><td></td></tr>
+                    <!-- Tuesday -->
+                    <tr><td rowspan="5">周二</td><td>INFINITESIMAL CALCULUS 1 and 2</td><td>E1-404</td><td>19:00-20:00</td><td>Lei Xuan-23 MCS</td><td>xuan24720@gtiit.edu.cn</td><td>本周二值班，周二/周四轮班</td></tr>
+                    <tr><td>Introduction to Computing with Python</td><td>E1-205</td><td>19:00-21:00</td><td>Dongchang Liu-24 MER / Zijian Meng-24 MSE</td><td>liu25192@gtiit.edu.cn / meng25685@gtiit.edu.cn</td><td>仅有周二值班</td></tr>
+                    <tr><td>LINEAR ALGEBRA M</td><td>E1-301</td><td>20:00-22:00</td><td>Feitong Tu-23MCS</td><td>tu24799@gtiit.edu.cn</td><td>本周改为周三值班</td></tr>
+                    <tr><td>ORDINARY DIFFERENTIAL EQUATIONS/H</td><td>E1-302</td><td>20:00-22:00</td><td>Xinrong Zhang-23 BFE</td><td>zhang24026@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ORGANIC CHEMISTRY</td><td>E1-303</td><td>20:00-22:00</td><td>Zhengyuan Tan-23BFE</td><td>tan24400@gtiit.edu.cn</td><td>本周暂停答疑</td></tr>
+                    <!-- Wednesday -->
+                    <tr><td rowspan="7">周三</td><td>Differential and Integral Calculus 2/2M</td><td>E1-203</td><td>19:00-21:00</td><td>Lijia Tan-23 MER</td><td>tan24517@gtiit.edu.cn</td><td>本周临时调为周四值班</td></tr>
+                    <tr><td>STRUCTURE AND PROPERTIES OF ENGINEERING MATERIALS</td><td>E1-205</td><td>20:00-22:00</td><td>Ruoxi Huang-23 MSE</td><td>huang24373@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ORGANIC CHEMISTRY</td><td>E1-303</td><td>19:00-21:00</td><td>Haichen Liu-24 BFE</td><td>liu25526@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ORGANIC CHEMISTRY 2</td><td>E1-301</td><td>19:00-21:00</td><td>Tairan Xie-22 CH</td><td>xie15464@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>LINEAR ALGEBRA M</td><td>E1-204</td><td>20:00-22:00</td><td>Feitong Tu-23MCS</td><td>tu24799@gtiit.edu.cn</td><td>本周改为周三值班</td></tr>
+                    <tr><td>Physics 2</td><td>E1-302</td><td>19:00-21:00</td><td>Yuxuan Zhang-23 MSE</td><td>zhang24083@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>Introduction To Biochemistry and Enzimol</td><td>E1-304</td><td>19:00-21:00</td><td>Yahan Yang-23 BFE</td><td>yang24624@gtiit.edu.cn</td><td></td></tr>
+                    <!-- Thursday -->
+                    <tr><td rowspan="9">周四</td><td>BASIC CONCEPTS IN MATHEMATICS and COMBINATORICS</td><td>E1-203</td><td>19:00-21:00</td><td>Sirui Yang-24 MCS</td><td>yang25071@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ANALYTICAL CHEMISTRY 1 / EXTANDED (FOR ENGINEERS)</td><td>E1-205</td><td>20:00-22:00</td><td>Zexin Liao-23CH</td><td>liao24715@gtiit.edu.cn</td><td>本周临时调整为周四值班</td></tr>
+                    <tr><td>Differential and Integral Calculus 2/2M</td><td>E1-204</td><td>19:00-21:00</td><td>Lijia Tan-23 MER</td><td>tan24517@gtiit.edu.cn</td><td>本周临时调整为周四值班</td></tr>
+                    <tr><td>INFINITESIMAL CALCULUS 1 and 2</td><td>E1-204</td><td>19:00-21:00</td><td>Haozhe Xu-24MCS</td><td>xu25503@gtiit.edu.cn</td><td>本周四休，周二/周四轮班</td></tr>
+                    <tr><td>ORGANIC CHEMISTRY</td><td>E1-301</td><td>19:00-21:00</td><td>Tairan Xie-22 CH</td><td>xie15464@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>ALGEBRA 1/EXTENDED</td><td>E1-304</td><td>19:00-21:00</td><td>Zhixiang Li</td><td>li09996@gtiit.edu.cn</td><td>可同时兼顾 Calculus 2、Physics1&2, Linear Algebra M, Algebra A, Algebra 1</td></tr>
+                    <tr><td>Physics 2</td><td>E1-404</td><td>19:00-21:00</td><td>Haolan Zhen-23BFE</td><td>zhen24037@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>Solid Mechanics-1</td><td>E1-302</td><td>19:00-21:00</td><td>Ruzhuo Xiong-24 MER</td><td>xiong25701@gtiit.edu.cn</td><td></td></tr>
+                    <tr><td>SYSTEMS PROGRAMMING</td><td>E1-303</td><td>19:00-21:00</td><td>Ranze Feng-24 MCS</td><td>feng25285@gtiit.edu.cn</td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footnote">
+            📝 如有建议或意见，请填写问卷：<a href="https://forms.office.com/r/XRGXKgrFxM" target="_blank">https://forms.office.com/r/XRGXKgrFxM</a> · 
+            PT工作邮箱：<a href="mailto:pt@gtiit.edu.cn">pt@gtiit.edu.cn</a>
+        </div>
+    </div>
+
+    <!-- =========== 面板2：1v1 学科辅导 =========== -->
+    <div id="tutoring" class="tab-panel">
+        <div style="background:#eef2ff; padding:14px 20px; border-radius:16px; margin-bottom:20px; border-left:5px solid #3b82f6;">
+            <strong>📌 预约准则</strong>（2026.6.14结束服务）<br>
+            • 每位学生每学期享有 <strong>5小时免费</strong> 辅导额度（含英语口语），超出后学科50元/小时，英语40元/小时（2026.5.1起）。<br>
+            • 需提前1周通过 <a href="https://outlook.office365.com/owa/calendar/PeerTutor@gtiit.edu.cn/bookings/" target="_blank">Booking页面</a> 预约，确认邮件会发至GT邮箱。<br>
+            • 一对多（最多4人）由预约人承担费用，可协商分摊。<br>
+            • 改约需提前72小时自行操作，或提前至少1天邮件联系 pt@gtiit.edu.cn。<br>
+            • 无故爽约2次将取消后续预约资格。
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>课号</th><th>可辅导课程</th><th>备注</th></tr></thead>
+                <tbody>
+                    <tr><td>104016</td><td>ALGEBRA 1/EXTENDED</td><td></td></tr>
+                    <tr><td>104066</td><td>Algebra A</td><td></td></tr>
+                    <tr><td>104168</td><td>Algebra B</td><td></td></tr>
+                    <tr><td>125101</td><td>Analytical Chemistry 1 For Engineers</td><td></td></tr>
+                    <tr><td>134058</td><td>BIOLOGY 1</td><td></td></tr>
+                    <tr><td>104818</td><td>COMPUTER ORGANIZATION AND PROGRAMMING</td><td></td></tr>
+                    <tr><td>104918</td><td>DATA STRUCTURES 1</td><td></td></tr>
+                    <tr><td>104041</td><td>Differential and Integral Calculus 1M</td><td></td></tr>
+                    <tr><td>104043</td><td>Differential and Integral Calculus 2M</td><td></td></tr>
+                    <tr><td>104952</td><td>DIGITAL SYSTEMS AND COMPUTER STRUCTURE</td><td></td></tr>
+                    <tr><td>64419</td><td>General Microbiology</td><td></td></tr>
+                    <tr><td>134019</td><td>Introduction to Biochemistry and Enzimol</td><td></td></tr>
+                    <tr><td>104814</td><td>Introduction to Computer Science M</td><td></td></tr>
+                    <tr><td>234128</td><td>Introduction to Computing with Python</td><td></td></tr>
+                    <tr><td>104824</td><td>Introduction to Systems Programming</td><td></td></tr>
+                    <tr><td>104019</td><td>LINEAR ALGEBRA M</td><td></td></tr>
+                    <tr><td>104131</td><td>Ordinary Differential Equations/H</td><td></td></tr>
+                    <tr><td>104228</td><td>Partial Differential Equations</td><td></td></tr>
+                    <tr><td>124510</td><td>PHYSICAL CHEMISTRY</td><td></td></tr>
+                    <tr><td>114051</td><td>Physics 1 / 1L</td><td></td></tr>
+                    <tr><td>114052</td><td>Physics 2</td><td></td></tr>
+                    <tr><td>64509</td><td>Process Biotechnology</td><td></td></tr>
+                    <tr><td>34028</td><td>Solid Mechanics-1</td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footnote">
+            💡 如需其他课程辅导，可发邮件至 <a href="mailto:pt@gtiit.edu.cn">pt@gtiit.edu.cn</a> 说明课号+课程名称，我们会尝试匹配PT资源。
+        </div>
+    </div>
+
+    <!-- =========== 面板3：1v1 英语口语 =========== -->
+    <div id="english" class="tab-panel">
+        <div style="background:#f0fdf4; padding:14px 20px; border-radius:16px; margin-bottom:20px; border-left:5px solid #22c55e;">
+            <strong>📌 英语口语预约准则</strong>（仅供24&25级学生，6.14结束）<br>
+            • 预约链接：<a href="https://outlook.office365.com/owa/calendar/PeerTutor@gtiit.edu.cn/bookings/s/zf6AqWpd_EW6EnXvC8HUfA2" target="_blank">点击此处</a><br>
+            • 每人每学期免费额度与学科辅导共享（共5小时），超出后40元/小时。<br>
+            • 需提前1周预约，每周不超过2小时，每次1小时为单位。<br>
+            • 一对多（最多4人）由预约人承担费用。<br>
+            • 改约需提前72小时自行操作，或提前至少1天邮件联系。<br>
+            • 无故爽约2次取消资格。
+        </div>
+        <div style="background:#f8fafc; border-radius:16px; padding:20px; text-align:center; color:#64748b;">
+            ✅ 请直接通过上方Booking链接预约，无需额外表格。
+        </div>
+    </div>
+
+    <!-- =========== 面板4：Peer Adviser =========== -->
+    <div id="pa" class="tab-panel">
+        <div style="background:#fef2f2; padding:14px 20px; border-radius:16px; margin-bottom:20px; border-left:5px solid #ef4444;">
+            <strong>📌 Peer Adviser 项目</strong>（6.14结束）<br>
+            • 一对多（最多3人）预约制，提供专业相关的学习方法咨询（非学科知识点答疑）。<br>
+            • 预约链接：<a href="https://outlook.office365.com/owa/calendar/PeerTutor@gtiit.edu.cn/bookings/s/nppNVGVKrkOkw0TDbK2UbQ2" target="_blank">点击此处</a><br>
+            • 每学期前2小时免费，之后40元/小时。<br>
+            • 改约需提前至少1天通知PA或邮件联系 pt@gtiit.edu.cn。<br>
+            • 无故爽约2次取消资格。
+        </div>
+        <p style="font-weight:600; margin:10px 0 8px;">👤 现任Peer Adviser 介绍</p>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>专业</th><th>姓名</th><th>年级</th><th>邮箱</th><th>自我介绍</th></tr></thead>
+                <tbody>
+                    <tr><td>BFE</td><td>李纯一</td><td>2022</td><td></td><td><div class="pa-card">我是来自22级生物的李纯一。在GT生活和学习的两年中，经过一步步探索和尝试，我很幸运找到了自己感兴趣和热爱的领域并坚持下去。同时我也找到了适合自己的方式，很好的适应了大学的学习生活。这其中也离不开老师和学长学姐们的帮助，他们的建议令我受益匪浅，很多时候在困难中提供了新思路，让我能够快速的成长。因此作为peer adviser，我很希望能有机会帮助到更多的学弟学妹们。通过提供学习建议和方法指导，并结合我自已和身边的经历，我希望能够帮助大家更好的适应大学生活，找到正确的方向和目标。</div></td></tr>
+                    <tr><td>BFE</td><td>谭镇沅</td><td>2023</td><td></td><td><div class="pa-card">我是来自23级生物的谭镇沅，非常荣幸有机会成为你的学习小伙伴。我认为学习是以兴趣为主动，相互探索的一件事。这也非常符合以色列的教育理念。在广以就读一年，我深刻体会到主动学习带来的乐趣，课堂上通过举手回答问题把知识点理解透，课堂下与老师的Office hour探索新的解题思路。与此同时，老师也享受其中，一个由学生发出难倒老师的题，老师会尽可能和我们一起解决。若有幸和你成为学习伙伴时，保持求知的欲望，共同成长，乐在其中。</div></td></tr>
+                    <tr><td>BFE</td><td>甄浩岚</td><td>2023</td><td></td><td><div class="pa-card">我是23级生物的甄浩岚。<br>我很幸运，广以的学习环境和学习理念非常适合我，这里有耐心和蔼的教授，又有志同道合、一起学、一起玩的伙伴。广以的第一年生活过的远远超出我的预期。<br>我是那种比较卷的类型，但也讨厌死努力。在不降低完成质量的情况下，我喜欢比较随性、简化地完成自己的任务。我非常讨厌死记硬背、比较喜欢理解知识的本质与他们之间的关系逻辑（这也是我喜欢广以教学理念的原因之一）。除此之外，我还喜欢和教授在课上课下进行交流互动（我也非常喜欢广以的提问式教学）。不过，也提醒大家大学时候还得多点玩，别学魔怔了。<br>最后，希望我能给大家提供合适的建议，帮助大家更好地适应大学生活。</div></td></tr>
+                    <tr><td>BFE</td><td>郭宇航</td><td>2023</td><td></td><td><div class="pa-card">我是来自23级生物的郭宇航，很开心能在本学期成为PA。首先我有很多在选课上很有趣的经历，比如在大一下就选了PEC之类的课程，现在对于BFE checklist很熟悉，所以我非常欢迎为同学们关于选课规划的咨询；除此之外，我也对如何进实验室，以及如何在实验室学习有一定的见解（因为自己踩过坑，如果能帮学弟学妹避雷就再好不过了）；最后关于学习方法，如何学好某一门课之类的问题也可以向我咨询，我在广以学习的时候整体换过很多次学习方法，也会因为某一些特殊的课采用更加合适的方法，比如像生物系的课我喜欢ppt注释课后整合知识点，有些语速比较慢的课像有机化学则会全程边上课边记笔记。<br>最后，我很荣幸能够加入peer advisor团队的一员，希望我的一些经历和方法能够帮助你找到未来的前进方向。</div></td></tr>
+                    <tr><td>BFE</td><td>曹赛亦</td><td>2023</td><td></td><td><div class="pa-card">大家好，我是23级生物专业的曹赛亦，很高兴能够担任本学期的PA。回想起刚进入大学的那段时间，我也曾经历过不适应与迷茫。新的学习方式、生活节奏以及科研探索都让我一度感到压力，但在不断的尝试与摸索中，我逐渐找到了属于自己的节奏，也摸索出了更高效的学习方法。同时，也尝试了不同方向的实验室，希望可以帮助学弟学妹们找到自己喜欢的方向。<br>希望通过自己的经验，能帮助学弟学妹们少走一些弯路，更快适应大学的学习和生活。</div></td></tr>
+                    <tr><td>BFE</td><td>杨雅菡</td><td>2023</td><td></td><td><div class="pa-card">大家好！我是来自23级生物与食品工程的杨雅菡，很开心能在本学期成为Peer Adviser的一员。回顾自己在GT的学习生活，从最初的适应到逐渐找到方向，我也经历过迷茫、焦虑和不断尝试的阶段。幸运的是，在老师和学长学姐的指导下，我逐步摸索出了适合自己的学习方式，也更加明确了未来的发展方向。<br><br>在学习上，我喜欢用结构化的方法整理知识点，例如将课程内容归纳成图表或思维导图，帮助自己建立整体逻辑；同时，我也注重课程之间的联系，比如将生物与食品工程的知识结合理解。除此之外，我还积累了一些实验室和科研经历，对于如何进入实验室、如何规划科研时间也有一些经验可以分享。<br><br>我希望能把自己的经验和方法分享给更多的学弟学妹，帮助大家更好地适应大学生活，找到属于自己的节奏与目标。如果在学习、科研或生活方面有任何困惑，欢迎随时来找我聊聊！</div></td></tr>
+                    <tr><td>BFE</td><td>王柳烟</td><td>2023</td><td></td><td><div class="pa-card">大家好，我是来自2023生物技术与食品工程的王柳烟，很高兴能够担任本学期的Peer Advisor. 在广以两年的学习过程中，我在生物专业的课程和学业推进中积累了一些浅见。我很乐意与大家交流，若大家在学业适应、课程选择等方面有疑问，我会尽我所能提供些许参考，希望能为大家的大学生活略尽绵力。</div></td></tr>
+                    <tr><td>CE</td><td>孙羽珊</td><td>2023</td><td></td><td><div class="pa-card">我是来自23级化工的孙羽珊。在24年的预备学期担任带组pt一职的经历，让我对帮助新生适应学校的生活、传授高效的学习方法产生了浓厚的兴趣，因此我感到非常荣幸能够成为peer adviser，继续帮助新同学。<br>在学习化工的一年里，我发掘了我对各个科目的热爱。遨游在拥有理工之美的知识海洋里，我认识到化工的知识之广阔，应用之广泛。在学习我热爱的科目上，我时常去请教老师，不仅是为了解决课上遗留的难题，更是去了解更多拓展的知识，激发出我对我所研究的领域的好奇心。在广以自由的学习氛围中，除了学业上的进步，我所培养出的时间规划能力、随机应变的应对方法、挖掘机会和潜力的眼光，都得到了巨大的提升。在学习之余，我还参加了广以辩论队、广以科创社等课余活动，结识了一群志同道合的好友，平衡了学习与生活。<br>很荣幸能够成为大家的peer adviser，我由衷希望我在这一年里的学习经验能够对大家提供帮助。</div></td></tr>
+                    <tr><td>CE</td><td>杨子悦</td><td>2023</td><td></td><td><div class="pa-card">大家好！我是 2023 级化学工程与工艺专业的杨子悦，也是 2025 年冬季学期 Peer Advisor团队的一员。 在广以度过的两年学习时光里，我们也曾遇到过许多问题。很多也正是初入大学的你们已经面临，或即将遇到的困惑与迷茫。<br>作为朋辈导师，我们的主要目标，是为主动寻求帮助的同学提供更具个性化的支持。无论是适配广以学习节奏的方法技巧，还是快速融入校园环境的经验分享，我们都会结合自身经历给出真诚的主观建议。<br>对我而言，参与 Peer Advisor 项目不仅是帮助新生，在协助大家适应校园生活的过程中，我也能重新审视过去两年的本科经历，同时，启发我对未来两年的学业与个人规划的思考。<br>感谢校方提供这样宝贵的平台与机会。让我有勇气走出舒适圈，在自己力所能及的范围内传递能量、发光发热。</div></td></tr>
+                    <tr><td>CH</td><td>陈慧</td><td>2022</td><td></td><td><div class="pa-card">大家好！我是来自22级化学系的陈慧，非常高兴能够成为你们的peer advisor。在过去的两年里，我学习到了一些高效的学习方法，也对化学系的学习规划有了更深入的理解。我希望能用这些经验帮助大家更顺利地度过大学的第一年。期待与大家的见面，一起开启精彩的大学旅程！</div></td></tr>
+                    <tr><td>CH</td><td>钟钰</td><td>2023</td><td></td><td><div class="pa-card">大家好！我是来自23级化学系的钟钰，很高兴能担任本学期的Peer Advisor。<br>在广以两年的学习生活里，我积累了不少化学学习的小技巧——比如怎么高效整理笔记、平衡理论课和实验课的时间，也逐渐掌握了高效自主学习的节奏，没落下课业的同时也能留出课余时间。<br>无论是刚接触专业课程的迷茫还是选课及课程规划的困惑，随时欢迎来找我交流！希望能用这些经验帮到大家，一起顺利度过充实的大学时光！</div></td></tr>
+                    <tr><td>CH</td><td>冯子倩</td><td>2024</td><td></td><td><div class="pa-card">大家好！我是2024级化学系冯子倩，很高兴能担任这学期的pa，为大家提供学习上的帮助！我完全理解大家在选课，适应大学生活并探索兴趣领域可能遇到的困惑与挑战，从数学系转到化学系中我摸索出一套适合自己的学习方法，保持GPA90 +。 我觉得挖掘并探索对学科的兴趣是至关重要的，这让我们学习更加高效和轻松，当你对某些学科感到迷茫和痛苦时，我可以给你一些建议和行之有效的办法。同时暑期担任数学pt让我更加明白如何帮助大家举一反三思考问题，解决问题。无论是协助大家解决学业规划，时间管理还是校园学习资源的利用，我都会以真诚和严谨的态度，为你提供支持~</div></td></tr>
+                    <tr><td>CH</td><td>韦润铎</td><td>2022</td><td></td><td><div class="pa-card">大家好！我是韦润铎，来自2022届化学系，很高兴能作为Peer Advisor为大家提供支持与帮助！作为化学系的一员，我深入学习并熟悉了本专业的课程设置、学术要求以及学习路径规划。无论是核心课程的选择、实验课的准备，还是跨学科选修的建议，我都能根据自己的经验和了解，为大家提供实用的指导。<br>在化学系的学习过程中，我积累了丰富的学术经验，特别是在有机化学、分析化学和物理化学等核心领域，对课程内容、学习方法和考试重点有较深入的理解。如果你在课程选择、学习规划或学术资源获取方面有疑问，我可以提供个性化的建议，帮助你更高效地达成目标。此外，我也乐于分享时间管理、实验报告撰写以及如何平衡学习与课外活动的经验。<br>我很希望能够倾听你的需求，以真诚和专业的态度为你答疑解惑。无论何时何地，都欢迎来找我聊聊！希望我的经验能为你带来启发，助力你在化学系的学习旅程中走得更顺畅、更自信！</div></td></tr>
+                    <tr><td>MCS</td><td>谢浩杰</td><td>2022</td><td></td><td><div class="pa-card">我是谢浩杰，数学系2022级的学生。本学期我很荣幸成为Peer Adviser，专门为新生提供学习咨询服务。如果你对数学系的选课有疑问，或者在考虑转专业到数学系，并需要了解相关课程安排，我将为你提供建议和帮助。我也可以帮助你规划学习路径，帮助你在课程安排上做出更明智的选择。我也可以与你分享一些学习经验。<br>非常期待通过这些机会帮助你更顺利地适应大学生活。无论你是对课程选择有疑问，还是希望获得一些经验分享，我都乐意为你解答，欢迎随时预约！</div></td></tr>
+                    <tr><td>MCS</td><td>方子睿</td><td>2022</td><td></td><td><div class="pa-card">我是方子睿，2022级数学与计算机科学系学生，很高兴能以Peer Advisor的身份为大家服务。<br>作为PA，我将专注于为同学们提供实用的学习咨询服务，帮助大家更好地适应广以数学系的学习节奏与生活。具体包括：学习与生涯路径规划、课程安排解析、选课问题指导、学习与考试实用经验分享、社团或其他活动参与建议，以及师生相处经验交流等。<br>无论你对大学学习有任何疑问或需要规划建议，都欢迎随时预约交流！希望能用我的经验为大家提供有价值的参考，帮助每位同学找到属于自己的大学节奏与发展方向！<br>期待与大家在校园里相遇，一起进步！</div></td></tr>
+                    <tr><td>ME</td><td>郑栋明</td><td>2023</td><td></td><td><div class="pa-card">我是来自23级机械的郑栋明。非常荣幸可以给大家分享学习经验，也希望能给大家的大学生活提供一些帮助。<br>在广以学习了两年机械系的课程后，我感觉到机械系涵盖的内容的范围之广和难度之高，每门课程也都有每门课程独有的特色，相应的也有不同的学习方法，所以我深刻地体会到，在广以，我们要通过不断的尝试，去找到适合自己的学习节奏和学习方法，这样才能在繁忙的学业中变得游刃有余。<br>在课后，我也会积极参加各种活动，羽毛球、篮球等等，这些活动可以缓解我们的学业压力，让身心得到放松，也可以让我们在广以认识更多志同道合的好朋友。<br>我希望能够为大家提供实用的学习建议，帮助大家少走弯路，让大学生活更加丰富多彩，为未来的职业生涯打下坚实的基础！</div></td></tr>
+                    <tr><td>ME</td><td>潘婧</td><td>2022</td><td></td><td><div class="pa-card">我是来自22级机械专业的潘婧，GPA90+，擅长疏导沟通，有耐心，学习以课堂为主，未来希望在机器人方向发展。</div></td></tr>
+                    <tr><td>MSE</td><td>李雨佳</td><td>2023</td><td></td><td><div class="pa-card">我是来自23级材料专业的李雨佳。很高兴在下一个学期担任peer adviser中的一员，帮助大家在学业方面给出相应的指导和学习方法。我认为在我们学习学科的过程中，掌握正确的学习方法可以起到事半功倍的效果，同样，如何平衡学习和娱乐，如何更高效的学习等等学习方面的问题都需要我们不断探索与调整。希望在下个学期可以帮助到大家更好的适应新学期的学习生活！</div></td></tr>
+                    <tr><td>MSE</td><td>林培宇</td><td>2023</td><td></td><td><div class="pa-card">大家好，我是23届林培宇，在广以读了两年，这两年我收获非常大，取得了较为优异的成绩，大一暑假当了学校的peer tutor，认识了许多优秀的同学与学长学姐，大二这一年在实验室做了不少实验，我的选择与努力让我过上了比高中更加丰富多彩的生活，这些使我和以前相比焕然一新。很高兴我能在大三继续当peer advisor。希望大家可以在大学积极向上，一起进步，让我们的大学生活更加美好！</div></td></tr>
+                    <tr><td>MSE</td><td>杨瑞琪</td><td>2022</td><td></td><td><div class="pa-card">我是来自22MSE的杨瑞琪，如果大家遇到学习上的问题，欢迎来找我，我会尽我所能给大家提供解决方案。材料是一个难度和趣味并存的专业，希望大家在学习的过程中，更加热爱自己的专业。</div></td></tr>
+                    <tr><td>MSE</td><td>胡燊楠</td><td>2022</td><td></td><td><div class="pa-card">我是来自22级材料的胡燊楠。我感到荣幸能为各位咨询学习上的问题，帮助大家更好地适应大学生活。<br>在学习材料的过程中，我很幸运的找到了自己热爱的方向和优秀的导师，由此我能深刻体会到，只有找到自己真正热爱的领域，才能在未来的学习和工作中保持持久的动力与激情。因此，我认为多尝试不同的课程和实践，探索自己真正感兴趣的方向。 同时，我也认为大学不仅仅是一个获取知识的地方，更是一个全面发展的平台。除了学术上的追求，我也鼓励大家积极参与课外活动，培养多方面的能力，比如沟通技巧、团队合作和领导力。希望我能够为大家提供有用的学习建议，帮助你们在学术道路上少走弯路，同时也找到属于你们自己的热情与目标！</div></td></tr>
+                    <tr><td>MSE</td><td>黄若茜</td><td>2023</td><td></td><td><div class="pa-card">我是来自23材料的黄若茜，很高兴成为Peer Advisor的一员！我平时喜欢探索高效的学习方法，也乐于帮助同学们适应大学的学习节奏与环境。在过去担任Peer Tutor的经历中，我积累了许多与同学沟通、答疑和学习规划方面的经验。<br>我相信，大学生活不仅是专业知识的积累，更是自我探索和成长的过程。希望我可以帮助大家找到适合自己的学习方式，更好地平衡学习与生活，在未来的学习中不断发现自己的潜力</div></td></tr>
+                    <tr><td>MSE</td><td>蒋雨茉</td><td>2024</td><td></td><td><div class="pa-card">大家好，我是来自24级材料的蒋雨茉，这学期的PA。我曾经经历过预备学期的学业低谷，但也通过自我摸索在大一实现了GPA90+的逆袭，并成功加入了实验组。我亲身体验过从迷茫到找到节奏的全过程，非常乐意分享我的经验，帮助大家顺利过度！另外如果大家觉得平时压力很大，不知道如何放松，我也有很多亲测有效的小方法。帮助你们找到自己的节奏，轻松前行。</div></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footnote">
+            📧 如有疑问，可邮件联系 <a href="mailto:pt@gtiit.edu.cn">pt@gtiit.edu.cn</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- 选项卡切换脚本 -->
+<script>
+    (function() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panels = {
+            station: document.getElementById('station'),
+            tutoring: document.getElementById('tutoring'),
+            english: document.getElementById('english'),
+            pa: document.getElementById('pa')
+        };
+
+        function activateTab(tabId) {
+            // 隐藏所有面板
+            Object.values(panels).forEach(p => p.classList.remove('active'));
+            // 显示选中的面板
+            if (panels[tabId]) panels[tabId].classList.add('active');
+            // 更新按钮状态
+            tabs.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabId) btn.classList.add('active');
+            });
+        }
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const tabId = this.dataset.tab;
+                activateTab(tabId);
+                // 可选：保存到URL hash
+                history.pushState(null, '', '#' + tabId);
+            });
+        });
+
+        // 从URL hash恢复选项卡
+        const hash = window.location.hash.replace('#', '');
+        if (hash && panels[hash]) {
+            activateTab(hash);
+        } else {
+            // 默认显示第一个
+            activateTab('station');
+        }
+
+        // 监听浏览器前进后退
+        window.addEventListener('hashchange', function() {
+            const h = window.location.hash.replace('#', '');
+            if (h && panels[h]) activateTab(h);
+        });
+    })();
+</script>
+
+</body>
+</html>
